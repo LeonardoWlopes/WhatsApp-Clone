@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/WhatsApp-Clone/static/css/main.5977adcb.css",
+    "main.js": "/WhatsApp-Clone/static/js/main.41ec2343.js",
+    "index.html": "/WhatsApp-Clone/index.html",
+    "main.5977adcb.css.map": "/WhatsApp-Clone/static/css/main.5977adcb.css.map",
+    "main.41ec2343.js.map": "/WhatsApp-Clone/static/js/main.41ec2343.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5977adcb.css",
+    "static/js/main.41ec2343.js"
+  ]
+}
