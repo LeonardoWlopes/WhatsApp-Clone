@@ -40,32 +40,47 @@ export default {
     return list;
   },
   addNewChat: async (user, user2) => {
-    let newChat = await db.collection("Chats").add({
-      messages: [],
-      users: [user.id, user2.id],
-    });
+    let userData = await db.collection("Users").doc(user.id).get();
 
-    db.collection("Users")
-      .doc(user.id)
-      .update({
-        chats: firebase.firestore.FieldValue.arrayUnion({
-          chatId: newChat.id,
-          title: user2.name,
-          image: user2.avatar,
-          with: user2.id,
-        }),
+    let parsedData = userData.data();
+
+    if (!parsedData.chats) {
+      addItem();
+    } else {
+      let exist = parsedData.chats.map((item) => item.title === user2.name);
+      if (!exist) {
+        addItem();
+      }
+    }
+
+    async function addItem() {
+      let newChat = await db.collection("Chats").add({
+        messages: [],
+        users: [user.id, user2.id],
       });
 
-    db.collection("Users")
-      .doc(user2.id)
-      .update({
-        chats: firebase.firestore.FieldValue.arrayUnion({
-          chatId: newChat.id,
-          title: user.name,
-          image: user.avatar,
-          with: user.id,
-        }),
-      });
+      db.collection("Users")
+        .doc(user.id)
+        .update({
+          chats: firebase.firestore.FieldValue.arrayUnion({
+            chatId: newChat.id,
+            title: user2.name,
+            image: user2.avatar,
+            with: user2.id,
+          }),
+        });
+
+      db.collection("Users")
+        .doc(user2.id)
+        .update({
+          chats: firebase.firestore.FieldValue.arrayUnion({
+            chatId: newChat.id,
+            title: user.name,
+            image: user.avatar,
+            with: user.id,
+          }),
+        });
+    }
   },
   onChatList: (userId, setChatList) => {
     return db
@@ -75,21 +90,22 @@ export default {
         if (doc.exists) {
           let data = doc.data();
           if (data.chats) {
-            let chats = [...data.chats];
+            // let chats = [...data.chats];
 
-            chats.sprt((a, b) => {
-              if (a.lastMessageDate === undefined) {
-                return -1;
-              }
-              if (b.lastMessageDate === undefined) {
-                return -1;
-              }
-              if (a.lastMessageDate.seconds < b.lastMessageDate.seconds) {
-                return 1;
-              } else {
-                return -1;
-              }
-            });
+            // chats.sprt((a, b) => {
+            //   if (a.lastMessageDate === undefined) {
+            //     return -1;
+            //   }
+            //   if (a.lastMessageDate === undefined) {
+            //     return -1;
+            //   }
+            //   if (a.lastMessageDate.seconds < b.lastMessageDate.seconds) {
+            //     return 1;
+            //   } else {
+            //     return -1;
+            //   }
+
+            // });
             setChatList(data.chats);
           }
         }
